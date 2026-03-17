@@ -16,7 +16,7 @@ public class RoleMasterEntity {
     public Long id;
 
     @Column(unique = true)
-    public String name;
+    public String roleName;
 
     // getters and setters
 
@@ -29,11 +29,11 @@ public class RoleMasterEntity {
     }
 
     public String getName() {
-        return name;
+        return roleName;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.roleName = name;
     }
 
 }
