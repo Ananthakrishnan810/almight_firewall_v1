@@ -6,6 +6,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.example.firewall.utils.ConstantsInUse;
+
 @Service
 public class ThreatDetectionService {
  
@@ -13,14 +15,14 @@ public class ThreatDetectionService {
 
     public ThreatDetectionService() {
         this.webClient = WebClient.builder()
-                .baseUrl("http://localhost:5000")
+                .baseUrl(ConstantsInUse.PYTHON_CONNECTION)
                 .build();
     }
 
     public String detectThreat(Map<String, String> payload) {
 
         Map response = webClient.post()
-                .uri("/detect")
+                .uri(ConstantsInUse.DETECT_API)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(payload)
                 .retrieve()
