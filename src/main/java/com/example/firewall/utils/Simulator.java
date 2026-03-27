@@ -119,6 +119,7 @@ public class Simulator extends JFrame{
         String encodedQuery = "id=1%20OR%201=1";
         String encodedXSS = "%3Cscript%3Ealert('XSS')%3C%2Fscript%3E";
         String encodedPath = "..%2F..%2F..%2Fetc%2Fpasswd";
+        
 
         if (sqlInjectionQuery.isSelected()) {
             list.add(new Attack("SQL Injection",url+"?query="+encodedQuery,"POST",null));
