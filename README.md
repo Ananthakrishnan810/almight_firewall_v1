@@ -32,3 +32,8 @@ How to Run the Project
 ----------------------
 To Run the Spring-boot:mvn clean compile spring-boot:run;
 To Run the python:python3 -m uvicorn main:app --reload --port 5000(port is changable)
+
+Java and python versions required
+---------------------------------
+
+Use java 21 + and python 3.10 +
