@@ -37,7 +37,7 @@ public class Simulator extends JFrame{
     private JCheckBox pathTraversal;
     private JCheckBox normalRequest;
 
-    public static String url = "http://localhost:7080/auth";
+    public static String url = ConstantsInUse.url_user;
 
     public Simulator() {
 
@@ -116,21 +116,16 @@ public class Simulator extends JFrame{
     private List<Attack> getSelectedAttacks(String url) {
         List<Attack> list = new ArrayList<>();
 
-        String encodedQuery = "id=1%20OR%201=1";
-        String encodedXSS = "%3Cscript%3Ealert('XSS')%3C%2Fscript%3E";
-        String encodedPath = "..%2F..%2F..%2Fetc%2Fpasswd";
-        
-
         if (sqlInjectionQuery.isSelected()) {
-            list.add(new Attack("SQL Injection",url+"?query="+encodedQuery,"POST",null));
+            list.add(new Attack("SQL Injection",url+"?query="+ConstantsInUse.encodedQuery,"POST",null));
         }   
 
         if (xssAttack.isSelected()) {
-            list.add(new Attack("XSS Attack",url+"?query="+encodedXSS,"POST",null));
+            list.add(new Attack("XSS Attack",url+"?query="+ConstantsInUse.encodedXSS,"POST",null));
         }
 
         if(pathTraversal.isSelected()){
-            list.add(new Attack("XSS Attack",url+"?file="+encodedPath,"POST", null));
+            list.add(new Attack("XSS Attack",url+"?file="+ConstantsInUse.encodedPath,"POST", null));
         }
 
         if(normalRequest.isSelected()){
