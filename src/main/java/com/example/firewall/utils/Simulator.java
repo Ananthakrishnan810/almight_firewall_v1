@@ -35,6 +35,9 @@ public class Simulator extends JFrame{
     private JCheckBox sqlInjectionBody;
     private JCheckBox xssAttack;
     private JCheckBox pathTraversal;
+    private JCheckBox normalRequest;
+
+    public static String url = "http://localhost:7080/auth";
 
     public Simulator() {
 
@@ -46,7 +49,7 @@ public class Simulator extends JFrame{
         JPanel topPanel = new JPanel(new GridLayout(4, 2));
 
         topPanel.add(new JLabel("Target URL:"));
-        urlField = new JTextField("http://localhost:7080/auth");
+        urlField = new JTextField(url);
         topPanel.add(urlField);
 
         topPanel.add(new JLabel("Threads:"));
@@ -68,10 +71,12 @@ public class Simulator extends JFrame{
         sqlInjectionQuery = new JCheckBox("SQL Injection query");
         xssAttack = new JCheckBox("XSS Attack");
         pathTraversal = new JCheckBox("Path Traversal");
+        normalRequest = new JCheckBox("Normal Request");
 
         box.add(sqlInjectionQuery);
         box.add(xssAttack);
         box.add(pathTraversal);
+        box.add(normalRequest);
 
         attackPanel.add(box);
 
@@ -111,20 +116,25 @@ public class Simulator extends JFrame{
     private List<Attack> getSelectedAttacks(String url) {
         List<Attack> list = new ArrayList<>();
 
+        String encodedQuery = "id=1%20OR%201=1";
+        String encodedXSS = "%3Cscript%3Ealert('XSS')%3C%2Fscript%3E";
+        String encodedPath = "..%2F..%2F..%2Fetc%2Fpasswd";
+
         if (sqlInjectionQuery.isSelected()) {
-            list.add(new Attack("SQL Injection","http://localhost:8080/auth?query=id=1 OR 1=1","GET",null
-            ));
+            list.add(new Attack("SQL Injection",url+"?query="+encodedQuery,"POST",null));
         }   
 
-        // if (xssAttack.isSelected()) {
-        //     list.add(new Attack("XSS Attack",url,"POST","<script>alert('XSS')</script>"
-        //     ));
-        // }
+        if (xssAttack.isSelected()) {
+            list.add(new Attack("XSS Attack",url+"?query="+encodedXSS,"POST",null));
+        }
 
-        // if(pathTraversal.isSelected()){
-        //     list.add(new Attack("XSS Attack",url,"POST", "/../../etc/passwd"
-        //     ));
-        // }
+        if(pathTraversal.isSelected()){
+            list.add(new Attack("XSS Attack",url+"?file="+encodedPath,"POST", null));
+        }
+
+        if(normalRequest.isSelected()){
+            list.add(new Attack("Normal Request",url,"POST", null));
+        }
 
         return list;
     }
@@ -134,7 +144,6 @@ public class Simulator extends JFrame{
             URL target = new URL(attack.url);
             HttpURLConnection conn = (HttpURLConnection) target.openConnection(); 
             conn.setRequestMethod(attack.method); 
-            conn.setDoOutput(true); 
             conn.setConnectTimeout(5000); 
             if (attack.payload != null && !attack.payload.isEmpty()) { 
                 OutputStream os = conn.getOutputStream(); 
