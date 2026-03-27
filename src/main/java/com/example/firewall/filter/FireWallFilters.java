@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.firewall.service.ThreatDetectionService;
+import com.example.firewall.utils.ConstantsInUse;
 import com.example.firewall.utils.CurrentTime;
 import com.example.firewall.utils.StringFormmer;
 
@@ -54,8 +55,6 @@ public class FireWallFilters implements Filter{
                                 .lines()
                                 .collect(Collectors.joining());
 
-                System.out.println("The query is........"+query+" "+ip+" "+uri+" "+method+" "+body);
-
 
                 Map<String, String> payload = new HashMap<>();
                 payload.put("uri", uri);
@@ -72,12 +71,12 @@ public class FireWallFilters implements Filter{
                 { 
                     if(threat_type.equals("NONE"))
                     {
-                        action = "ALLOW";
+                        action = ConstantsInUse.ALLOW_THE_REQUEST;
                         getStringForRequestData(actionTime,ip,uri,query,method,threat_type,action);
                     }
                     else
                     {
-                        action = "BLOCK";
+                        action = ConstantsInUse.BLOCK_THE_REQUEST;
                         getStringForRequestData(actionTime,ip,uri, query, method, threat_type, action);
                     }
                 }
@@ -87,8 +86,6 @@ public class FireWallFilters implements Filter{
     public void getStringForRequestData(long actionTime,String ip,String uri, String query, String method, String threat_type, String action) {
 
             String mergedFullString = stringFormmer.formString(actionTime,ip,uri,query,method,threat_type,action);
-
-            System.out.println("The mergedFullString from the thread detection is........"+mergedFullString);
      
     }
 
