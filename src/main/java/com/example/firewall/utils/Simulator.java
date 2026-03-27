@@ -37,7 +37,7 @@ public class Simulator extends JFrame{
     private JCheckBox pathTraversal;
     private JCheckBox normalRequest;
 
-    public static String url = ConstantsInUse.url_user;
+    public static String url = ConstantsInUse.URL_USE;
 
     public Simulator() {
 
@@ -117,15 +117,15 @@ public class Simulator extends JFrame{
         List<Attack> list = new ArrayList<>();
 
         if (sqlInjectionQuery.isSelected()) {
-            list.add(new Attack("SQL Injection",url+"?query="+ConstantsInUse.encodedQuery,"POST",null));
+            list.add(new Attack("SQL Injection",url+"?query="+ConstantsInUse.ENCODEDQUERY,"POST",null));
         }   
 
         if (xssAttack.isSelected()) {
-            list.add(new Attack("XSS Attack",url+"?query="+ConstantsInUse.encodedXSS,"POST",null));
+            list.add(new Attack("XSS Attack",url+"?query="+ConstantsInUse.ENCODEDXSS,"POST",null));
         }
 
         if(pathTraversal.isSelected()){
-            list.add(new Attack("XSS Attack",url+"?file="+ConstantsInUse.encodedPath,"POST", null));
+            list.add(new Attack("XSS Attack",url+"?file="+ConstantsInUse.ENCODEDPATH,"POST", null));
         }
 
         if(normalRequest.isSelected()){
