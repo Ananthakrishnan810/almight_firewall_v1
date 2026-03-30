@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.example.firewall.pojo.ClientRequestPojo;
 import com.example.firewall.service.ThreatDetectionService;
 import com.example.firewall.utils.ConstantsInUse;
 import com.example.firewall.utils.CurrentTime;
@@ -85,7 +86,9 @@ public class FireWallFilters implements Filter{
                         
     public void getStringForRequestData(long actionTime,String ip,String uri, String query, String method, String threat_type, String action) {
 
-            String mergedFullString = stringFormmer.formString(actionTime,ip,uri,query,method,threat_type,action);
+        ClientRequestPojo clientRequestPojo = new ClientRequestPojo();
+        clientRequestPojo.copyClientRequestData(actionTime, ip, uri, query, method, threat_type, action);
+        
      
     }
 
