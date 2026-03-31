@@ -1,5 +1,7 @@
 package com.example.firewall.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -9,6 +11,7 @@ import com.example.firewall.dao.UserMasterDao;
 import com.example.firewall.entity.RoleMasterEntity;
 import com.example.firewall.entity.UserMasterEntity;
 import com.example.firewall.pojo.UserMasterPojo;
+import com.example.firewall.utils.ConstantsInUse;
 
 @Service
 public class AuthService {
@@ -31,6 +34,7 @@ public class AuthService {
         UserMasterEntity user = new UserMasterEntity();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setStatus(ConstantsInUse.ACTIVE_STATUS);
 
         RoleMasterEntity role = roleMasterDao.findByRoleName(request.getRole())
         .orElseThrow(() -> new RuntimeException("Role not found"));
@@ -40,6 +44,34 @@ public class AuthService {
         userMasterDao.save(user);
 
         return "User Registered Successfully";
+    }
+
+    public UserMasterEntity getAllUser(){
+
+        UserMasterEntity user = userMasterDao.findAllUser(ConstantsInUse.ACTIVE_STATUS);
+        return user;
+
+    }
+
+    public String deleteUserById(List<UserMasterPojo> userIds){
+
+        for(UserMasterPojo user:userIds){
+            UserMasterEntity userMasterEntity = userMasterDao.findUserList(user.username, ConstantsInUse.ACTIVE_STATUS);
+            if(userMasterEntity != null){
+                userMasterEntity.status = ConstantsInUse.INACTIVE_STATUS;
+                userMasterDao.saveAndFlush(userMasterEntity);
+            }
+        }
+
+        return ConstantsInUse.SUCCESS_MESSAGE;
+    }
+
+    public UserMasterEntity getUserDetails(String username){
+
+        UserMasterEntity user = userMasterDao.findByUsername(username)
+        .orElseThrow(() -> new RuntimeException("user not found"));
+
+        return user;
     }
 
 }
