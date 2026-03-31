@@ -22,6 +22,8 @@ public class UserMasterEntity {
 
     public String password;
 
+    public String status;
+
     @ManyToOne
     @JoinColumn(name = "role_id")
     public RoleMasterEntity role;
@@ -43,6 +45,14 @@ public class UserMasterEntity {
         this.password = password;
     }
 
+    public String getStatus(){
+        return status;
+    }
+
+    public void setStatus(String status){
+        this.status = status;
+    }
+
     // Getter and Setter for role
     public RoleMasterEntity getRole() {
         return role;
@@ -51,6 +61,5 @@ public class UserMasterEntity {
     public void setRole(RoleMasterEntity role) {
         this.role = role;
     }
-
 
 }
