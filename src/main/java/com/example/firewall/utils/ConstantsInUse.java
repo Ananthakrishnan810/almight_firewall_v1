@@ -10,5 +10,9 @@ public class ConstantsInUse {
     public static String ENCODEDPATH = "..%2F..%2F..%2Fetc%2Fpasswd";
     public static String ALLOW_THE_REQUEST = "ALLOW";
     public static String BLOCK_THE_REQUEST = "BLOCK";
+    public static String REQUEST_NOT_ASSIGNED = "NOT ASSIGNED";
+    public static String ACTIVE_STATUS = "active";
+    public static String INACTIVE_STATUS = "inactive";
+    public static String SUCCESS_MESSAGE = "success";
 
 }
