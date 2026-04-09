@@ -9,12 +9,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-<<<<<<< HEAD
 import com.example.firewall.dto.ClientRequestPojo;
-import com.example.firewall.service.CassandraService;
-=======
-import com.example.firewall.pojo.ClientRequestPojo;
->>>>>>> 0e72d3586e2d65d51679c159a5c63678f65035c2
+import com.example.firewall.queue.KafkaProducerService;
 import com.example.firewall.service.ThreatDetectionService;
 import com.example.firewall.utils.ConstantsInUse;
 import com.example.firewall.utils.CurrentTime;
@@ -40,12 +36,9 @@ public class FireWallFilters implements Filter{
     @Autowired
     public StringFormmer stringFormmer;
 
-<<<<<<< HEAD
     @Autowired
-    public CassandraService cassandraService;
+    public KafkaProducerService kafkaProducerService;
 
-=======
->>>>>>> 0e72d3586e2d65d51679c159a5c63678f65035c2
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
@@ -54,11 +47,7 @@ public class FireWallFilters implements Filter{
 
                 Set<String> blockedIps = Set.of("192.168.1.10");
 
-<<<<<<< HEAD
                 String action = ConstantsInUse.REQUEST_NOT_ASSIGNED;
-=======
-                String action = null;
->>>>>>> 0e72d3586e2d65d51679c159a5c63678f65035c2
        
                 HttpServletRequest req = (HttpServletRequest) request;
                 HttpServletResponse res = (HttpServletResponse) response;
@@ -71,10 +60,6 @@ public class FireWallFilters implements Filter{
                                 .lines()
                                 .collect(Collectors.joining());
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 0e72d3586e2d65d51679c159a5c63678f65035c2
                 Map<String, String> payload = new HashMap<>();
                 payload.put("uri", uri);
                 payload.put("query", query);
@@ -106,11 +91,7 @@ public class FireWallFilters implements Filter{
 
         ClientRequestPojo clientRequestPojo = new ClientRequestPojo();
         clientRequestPojo.copyClientRequestData(actionTime, ip, uri, query, method, threat_type, action);
-<<<<<<< HEAD
-        cassandraService.insertTocassandra(clientRequestPojo);
-=======
-        
->>>>>>> 0e72d3586e2d65d51679c159a5c63678f65035c2
+        kafkaProducerService.sendMessage(clientRequestPojo);
      
     }
 

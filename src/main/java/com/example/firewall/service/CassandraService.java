@@ -1,19 +1,13 @@
 package com.example.firewall.service;
 
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.example.firewall.dto.ClientRequestPojo;
+import com.example.firewall.queue.KafkaConsumerService;
 
-@Service
 public class CassandraService {
- 
+
+    @Autowired
+    private KafkaConsumerService kafkaConsumerService;
+
     
-    public String insertTocassandra(ClientRequestPojo clientRequest){
-
-
-
-        return null;
-
-    }
-
 }
