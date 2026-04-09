@@ -11,13 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-<<<<<<< HEAD
 import com.example.firewall.entity.UserMasterEntity;
 import com.example.firewall.repository.UserMasterDao;
-=======
-import com.example.firewall.dao.UserMasterDao;
-import com.example.firewall.entity.UserMasterEntity;
->>>>>>> 0e72d3586e2d65d51679c159a5c63678f65035c2
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService{

@@ -6,19 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-<<<<<<< HEAD
 import com.example.firewall.dto.UserMasterPojo;
 import com.example.firewall.entity.RoleMasterEntity;
 import com.example.firewall.entity.UserMasterEntity;
 import com.example.firewall.repository.RoleMasterDao;
 import com.example.firewall.repository.UserMasterDao;
-=======
-import com.example.firewall.dao.RoleMasterDao;
-import com.example.firewall.dao.UserMasterDao;
-import com.example.firewall.entity.RoleMasterEntity;
-import com.example.firewall.entity.UserMasterEntity;
-import com.example.firewall.pojo.UserMasterPojo;
->>>>>>> 0e72d3586e2d65d51679c159a5c63678f65035c2
 import com.example.firewall.utils.ConstantsInUse;
 
 @Service
@@ -42,10 +34,6 @@ public class AuthService {
         UserMasterEntity user = new UserMasterEntity();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-<<<<<<< HEAD
-=======
-        user.setStatus(ConstantsInUse.ACTIVE_STATUS);
->>>>>>> 0e72d3586e2d65d51679c159a5c63678f65035c2
 
         RoleMasterEntity role = roleMasterDao.findByRoleName(request.getRole())
         .orElseThrow(() -> new RuntimeException("Role not found"));
@@ -85,13 +73,10 @@ public class AuthService {
         return user;
     }
 
-<<<<<<< HEAD
     public UserMasterEntity getByUserName(String username){
 
         return userMasterDao.findByUserName(username, ConstantsInUse.ACTIVE_STATUS);
 
     }
 
-=======
->>>>>>> 0e72d3586e2d65d51679c159a5c63678f65035c2
 }

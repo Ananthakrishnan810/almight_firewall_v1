@@ -11,13 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-<<<<<<< HEAD
 import com.example.firewall.dto.LoginMasterPojo;
 import com.example.firewall.entity.UserMasterEntity;
-=======
-import com.example.firewall.entity.UserMasterEntity;
-import com.example.firewall.pojo.LoginMasterPojo;
->>>>>>> 0e72d3586e2d65d51679c159a5c63678f65035c2
 import com.example.firewall.service.AuthService;
 
 import jakarta.servlet.http.HttpServletRequest;
