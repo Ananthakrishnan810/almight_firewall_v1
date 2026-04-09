@@ -62,5 +62,9 @@ public class UserMasterEntity {
         this.role = role;
     }
 
+<<<<<<< HEAD
 
 }
+=======
+}
+>>>>>>> 0e72d3586e2d65d51679c159a5c63678f65035c2

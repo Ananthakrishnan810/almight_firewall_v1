@@ -14,8 +14,11 @@ public class ConstantsInUse {
     public static String ACTIVE_STATUS = "active";
     public static String INACTIVE_STATUS = "inactive";
     public static String SUCCESS_MESSAGE = "success";
+<<<<<<< HEAD
     public static String DUPLICATE_MESSAGE = "duplicate data";
     public static String RULEFILEPATH = "threat_detection/rules.xlsx";
 
+=======
+>>>>>>> 0e72d3586e2d65d51679c159a5c63678f65035c2
 
 }
