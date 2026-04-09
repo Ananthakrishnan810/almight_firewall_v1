@@ -1,0 +1,7 @@
+threat_type,pattern,pattern_type,field,priority
+SQL_INJECTION,(\bUNION\b.*\bSELECT\b),REGEX,query,1
+SQL_INJECTION,(\bSELECT\b.*\bFROM\b),REGEX,query,2
+SQL_INJECTION,('.*\bOR\b.*'=),REGEX,query,3
+SQL_INJECTION,(\bOR\b\s+1=1),REGEX,query,4
+XSS,(<script.*?>.*?</script>),REGEX,query,1
+PATH_TRAVERSAL,(\.\./),REGEX,query,1
