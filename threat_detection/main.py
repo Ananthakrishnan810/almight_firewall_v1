@@ -27,7 +27,7 @@ def match_rule(rule, payload):
         return re.search(pattern, text, re.IGNORECASE)
 
     return False
-
+#It will detect the thread from the .xlsx sheet and retuen back it
 
 @app.post("/detect")
 def detect(payload: dict):
