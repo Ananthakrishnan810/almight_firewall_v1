@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetGuard — WAF &amp; SOC Platform</title>
+  <meta name="description" content="Next-Gen Web Application Firewall &amp; Threat Intelligence Management Console">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-theme">
+
+  <!-- ========================================================================= -->
+  <!-- 1. LOGIN VIEW                                                             -->
+  <!-- ========================================================================= -->
+  <div id="loginSection" class="login-wrapper">
+    <header class="logo-area">
+      <div class="logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shield-icon">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          <path d="m9 12 2 2 4-4"></path>
+        </svg>
+      </div>
+      <h1 class="brand-name">NetGuard WAF</h1>
+      <p class="brand-subtitle">AI &amp; Rule-Powered Defense Platform</p>
+    </header>
+
+    <div class="login-card">
+      <div class="card-content">
+        <h2 class="card-title">Access Security Console</h2>
+        <p class="card-desc">Sign in with your SecOps credentials</p>
+
+        <form class="login-form" id="loginForm">
+          <div class="input-group">
+            <label for="username">Username / Agent ID</label>
+            <input type="text" id="username" value="secops_admin" required autocomplete="username">
+          </div>
+
+          <div class="input-group">
+            <div class="label-row">
+              <label for="password">Security Key / Password</label>
+            </div>
+            <input type="password" id="password" value="admin123" required autocomplete="current-password">
+          </div>
+
+          <div id="loginError" class="page-subtitle text-red" style="display: none;"></div>
+
+          <button type="submit" class="btn-primary btn-full" id="btnSignIn">
+            <span>Enter Console</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </form>
+
+        <div class="demo-quick-access">
+          <button type="button" class="btn-ghost btn-full" id="btnQuickDemo">
+            Quick Demo Access (Viewer)
+          </button>
+        </div>
+      </div>
+
+      <div class="status-footer">
+        <span class="status-dot pulse-green"></span>
+        <span class="status-text">WAF Core (:7080) &bull; Threat ML (:5000) &bull; Cassandra (:7081)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 2. MAIN DASHBOARD SHELL                                                   -->
+  <!-- ========================================================================= -->
+  <div id="appDashboard" class="app-container" style="display: none;">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-badge">
+          <div class="logo-icon-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <div class="brand-info">
+            <div class="brand-title-row">
+              <span class="brand-title">NetGuard</span>
+              <span class="live-chip"><span class="dot-sm green"></span>LIVE</span>
+            </div>
+            <div class="brand-tag">WAF &amp; SOC V1.0</div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">MONITOR</div>
+        <button class="nav-item active" data-tab="tab-overview">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg>
+          <span>Overview</span>
+        </button>
+        <button class="nav-item" data-tab="tab-events">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="6" y1="12" x2="18" y2="12"></line><line x1="9" y1="18" x2="15" y2="18"></line></svg>
+          <span>Firewall Events</span>
+        </button>
+        <button class="nav-item" data-tab="tab-telemetry">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="2" width="6" height="6" rx="1"></rect><rect x="16" y="16" width="6" height="6" rx="1"></rect><rect x="2" y="16" width="6" height="6" rx="1"></rect><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"></path><path d="M12 12V8"></path></svg>
+          <span>Internal Telemetry</span>
+        </button>
+
+        <div class="nav-section-title">SECURITY</div>
+        <button class="nav-item" data-tab="tab-rules">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+          <span>Firewall Rules</span>
+        </button>
+        <button class="nav-item" data-tab="tab-threats">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 0-4 4v2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-2V6a4 4 0 0 0-4-4Z"></path><circle cx="12" cy="14" r="2"></circle></svg>
+          <span>Threat Engine</span>
+        </button>
+        <button class="nav-item" data-tab="tab-simulator">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>
+          <span>Attack Simulator</span>
+        </button>
+
+        <div class="nav-section-title">LOGS</div>
+        <button class="nav-item" data-tab="tab-logs">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          <span>Audit Logs</span>
+        </button>
+        <button class="nav-item" data-tab="tab-syslog">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+          <span>Raw Syslog</span>
+        </button>
+
+        <div class="nav-section-title">SYSTEM</div>
+        <button class="nav-item" data-tab="tab-settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Settings</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="avatar" id="sidebarAvatar">SA</div>
+          <div class="user-meta">
+            <span class="user-name" id="sidebarUserName">SecOps Admin</span>
+            <span class="user-role" id="sidebarUserRole">ADMIN</span>
+          </div>
+        </div>
+        <button class="btn-icon" id="btnSignOut" title="Sign Out">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+      <!-- TOP HEADER BAR (2 ROWS) -->
+      <header class="top-shell">
+        <div class="topbar-row">
+          <div class="quick-search-box">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="globalQuickSearch" placeholder="Quick search..." autocomplete="off">
+            <kbd class="kbd-hint">&#8984;K</kbd>
+          </div>
+
+          <div class="topbar-controls">
+            <div class="threat-pill elevated" id="threatLevelBadge">
+              <span class="dot-sm red"></span>
+              <span id="threatLevelText">THREAT LEVEL NORMAL</span>
+            </div>
+
+            <div class="timeframe-group" id="timeframeGroup">
+              <button class="tf-btn" data-tf="15m">15m</button>
+              <button class="tf-btn" data-tf="1h">1h</button>
+              <button class="tf-btn active" data-tf="24h">24h</button>
+              <button class="tf-btn" data-tf="7d">7d</button>
+              <button class="tf-btn" data-tf="30d">30d</button>
+            </div>
+
+            <span class="utc-clock" id="utcClock">00:00:00 UTC</span>
+
+            <button class="btn-refresh" id="btnRefreshAll">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+              <span>Refresh</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="ticker-row">
+          <div class="ticker-item">
+            <span class="ticker-icon green">&#9678;</span>
+            <span class="ticker-label">SYSLOG</span>
+            <strong class="ticker-val" id="tickerRate">0.0 msg/s</strong>
+            <span class="dot-sm green"></span>
+          </div>
+          <div class="ticker-item">
+            <span class="ticker-icon cyan">&#9889;</span>
+            <span class="ticker-label">WAF</span>
+            <strong class="ticker-val" id="tickerWaf">ONLINE</strong>
+          </div>
+          <div class="ticker-item">
+            <span class="ticker-icon muted">&#9776;</span>
+            <span class="ticker-label">CASSANDRA</span>
+            <strong class="ticker-val" id="tickerDb">0 idx</strong>
+          </div>
+          <div class="ticker-item">
+            <span class="ticker-icon muted">&#9201;</span>
+            <span class="ticker-label">RETENTION</span>
+            <strong class="ticker-val" id="tickerRetention">7d</strong>
+          </div>
+          <div class="ticker-pill-amber">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <span id="tickerThreatRules">THREAT ML 0 RULES</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- =================================================================== -->
+      <!-- TAB 1: OVERVIEW                                                     -->
+      <!-- =================================================================== -->
+      <section id="tab-overview" class="tab-panel active">
+        <div class="page-head">
+          <div class="page-title-line">
+            <h1>Security Overview</h1>
+            <span class="status-pill-live"><span class="dot-sm green"></span>System Live</span>
+          </div>
+          <p class="page-subtitle" id="overviewSubtitle">Firewall &amp; syslog analytics for the last 24h window</p>
+        </div>
+
+        <!-- 6 KPI CARDS -->
+        <div class="kpi-grid-6">
+          <div class="kpi-card">
+            <div class="kpi-top"><span class="kpi-icon-sm blue">&#128101;</span><span class="kpi-title">CLIENTS</span></div>
+            <div class="kpi-value" id="kpiClients">0</div>
+            <div class="kpi-sub">unique endpoints</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top"><span class="kpi-icon-sm cyan">&#128737;</span><span class="kpi-title">FIREWALL EVENTS</span></div>
+            <div class="kpi-value" id="kpiTotalEvents">0</div>
+            <div class="kpi-sub">in window</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top"><span class="kpi-icon-sm green">&#10003;</span><span class="kpi-title">ALLOWED</span></div>
+            <div class="kpi-value text-green" id="kpiAllowed">0</div>
+            <div class="kpi-sub" id="kpiAllowedPct">0% accept/allow</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top"><span class="kpi-icon-sm red">&#8856;</span><span class="kpi-title">BLOCKED</span></div>
+            <div class="kpi-value text-red" id="kpiBlocked">0</div>
+            <div class="kpi-sub" id="kpiBlockedPct">0% block/deny</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top"><span class="kpi-icon-sm cyan">&#9881;</span><span class="kpi-title">ACTUATOR HTTP</span></div>
+            <div class="kpi-value" id="kpiInternal">0</div>
+            <div class="kpi-sub">WAF engine requests</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top"><span class="kpi-icon-sm amber">&#9888;</span><span class="kpi-title">THREAT IPS</span></div>
+            <div class="kpi-value text-amber" id="kpiThreatIps">0</div>
+            <div class="kpi-sub">flagged sources</div>
+          </div>
+        </div>
+
+        <!-- 2 TIME SERIES STACKED BAR CHARTS -->
+        <div class="charts-grid-2">
+          <div class="panel-card">
+            <div class="chart-head">
+              <span class="chart-title">FIREWALL EVENTS</span>
+              <span class="chart-meta" id="chartEventsBucketLabel">per bucket</span>
+            </div>
+            <div class="canvas-wrap"><canvas id="chartFirewallEvents"></canvas></div>
+            <div class="chart-legend">
+              <span><i class="leg-sq green"></i>Allowed</span>
+              <span><i class="leg-sq red"></i>Blocked</span>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="chart-head">
+              <span class="chart-title">THREAT &amp; TRAFFIC CATEGORIES</span>
+              <span class="chart-meta" id="chartThreatBucketLabel">per bucket</span>
+            </div>
+            <div class="canvas-wrap"><canvas id="chartThreatSeries"></canvas></div>
+            <div class="chart-legend">
+              <span><i class="leg-sq red"></i>SQLi</span>
+              <span><i class="leg-sq amber"></i>XSS</span>
+              <span><i class="leg-sq purple"></i>Path Trav</span>
+              <span><i class="leg-sq cyan"></i>Clean</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 DONUT CHARTS -->
+        <div class="charts-grid-3">
+          <div class="panel-card">
+            <div class="chart-head">
+              <span class="chart-title">FIREWALL ACTIONS</span>
+              <span class="chart-meta">Distribution</span>
+            </div>
+            <div class="donut-row">
+              <div class="donut-wrap">
+                <canvas id="donutActions"></canvas>
+                <div class="donut-center">
+                  <strong id="donutActionsTotal">0</strong>
+                  <span>TOTAL</span>
+                </div>
+              </div>
+              <div class="donut-legend" id="legendActions"></div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="chart-head">
+              <span class="chart-title">HTTP METHODS</span>
+              <span class="chart-meta">Distribution</span>
+            </div>
+            <div class="donut-row">
+              <div class="donut-wrap">
+                <canvas id="donutMethods"></canvas>
+                <div class="donut-center">
+                  <strong id="donutMethodsTotal">0</strong>
+                  <span>TOTAL</span>
+                </div>
+              </div>
+              <div class="donut-legend" id="legendMethods"></div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="chart-head">
+              <span class="chart-title">THREAT CLASSIFICATION</span>
+              <span class="chart-meta">Distribution</span>
+            </div>
+            <div class="donut-row">
+              <div class="donut-wrap">
+                <canvas id="donutThreats"></canvas>
+                <div class="donut-center">
+                  <strong id="donutThreatsTotal">0</strong>
+                  <span>TOTAL</span>
+                </div>
+              </div>
+              <div class="donut-legend" id="legendThreats"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QUICK SIMULATOR + MICROSERVICE MESH -->
+        <div class="middle-grid">
+          <div class="panel-card">
+            <div class="panel-head-inline">
+              <div>
+                <h3 class="panel-title-sm">&#9889; Quick Threat Simulation Launcher</h3>
+                <p class="panel-sub-sm">Execute instant security tests against the firewall filter to verify ALLOW and BLOCK evaluations.</p>
+              </div>
+              <span class="pill-muted">Simulator</span>
+            </div>
+
+            <div class="quick-sim-grid">
+              <button class="quick-sim-btn danger" onclick="executeQuickAttack('SQL Injection')">
+                <span class="qsim-icon red">&#9888;</span>
+                <div>
+                  <strong>SQL Injection Attack</strong>
+                  <small>?query=SELECT * FROM users</small>
+                </div>
+              </button>
+              <button class="quick-sim-btn warning" onclick="executeQuickAttack('XSS Attack')">
+                <span class="qsim-icon amber">&#9888;</span>
+                <div>
+                  <strong>Cross-Site Scripting (XSS)</strong>
+                  <small>?query=&lt;script&gt;alert(1)&lt;/script&gt;</small>
+                </div>
+              </button>
+              <button class="quick-sim-btn info" onclick="executeQuickAttack('Path Traversal')">
+                <span class="qsim-icon blue">&#128194;</span>
+                <div>
+                  <strong>Path Traversal Attack</strong>
+                  <small>?query=../../../../etc/passwd</small>
+                </div>
+              </button>
+              <button class="quick-sim-btn success" onclick="executeQuickAttack('Clean Request')">
+                <span class="qsim-icon green">&#128737;</span>
+                <div>
+                  <strong>Normal Clean Request</strong>
+                  <small>Valid benign payload</small>
+                </div>
+              </button>
+            </div>
+
+            <div id="quickSimResult" class="quick-sim-result" style="display: none;"></div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-head-inline">
+              <h3 class="panel-title-sm">&#9679; Real-Time Microservice Mesh</h3>
+            </div>
+            <div class="mesh-list">
+              <div class="mesh-row">
+                <div>
+                  <strong class="mesh-name">almight_firewall_v1</strong>
+                  <small class="mesh-sub">Port 7080 &bull; Spring Boot</small>
+                </div>
+                <div class="mesh-right">
+                  <span class="mesh-lat" id="latWaf">--ms</span>
+                  <span class="badge-online" id="meshWaf">&bull; ONLINE</span>
+                </div>
+              </div>
+              <div class="mesh-row">
+                <div>
+                  <strong class="mesh-name">threat_detection</strong>
+                  <small class="mesh-sub">Port 5000 &bull; FastAPI</small>
+                </div>
+                <div class="mesh-right">
+                  <span class="mesh-lat" id="latThreat">--ms</span>
+                  <span class="badge-online" id="meshThreat">&bull; CHECKING</span>
+                </div>
+              </div>
+              <div class="mesh-row">
+                <div>
+                  <strong class="mesh-name">almighty_cassandra_log</strong>
+                  <small class="mesh-sub">Port 7081 &bull; Cassandra Audit</small>
+                </div>
+                <div class="mesh-right">
+                  <span class="mesh-lat" id="latCassandra">--ms</span>
+                  <span class="badge-online" id="meshCassandra">&bull; CHECKING</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RECENT INTERCEPTION STREAM -->
+        <div class="panel-card">
+          <div class="panel-head-inline">
+            <h3 class="panel-title-sm">&#9782; Recent Interception Stream</h3>
+            <button class="btn-link" onclick="switchTab('tab-events')">View all events &rarr;</button>
+          </div>
+          <div class="table-wrap">
+            <table class="soc-table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Client IP</th>
+                  <th>Method</th>
+                  <th>URI / Query</th>
+                  <th>Threat Classified</th>
+                  <th>Firewall Action</th>
+                </tr>
+              </thead>
+              <tbody id="recentLogsBody">
+                <tr><td colspan="6" class="empty-cell">Loading interceptions...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- TAB 2: FIREWALL EVENTS                                              -->
+      <!-- =================================================================== -->
+      <section id="tab-events" class="tab-panel">
+        <div class="page-head-row">
+          <div>
+            <div class="page-title-line">
+              <h1>Firewall Security Events</h1>
+              <span class="status-pill-live"><span class="dot-sm green"></span>System Live</span>
+            </div>
+            <p class="page-subtitle" id="eventsSubtitle">0 interceptions in the last 24h window</p>
+          </div>
+          <button class="btn-outline" id="btnExportEventsCsv">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>Export CSV</span>
+          </button>
+        </div>
+
+        <div class="panel-card">
+          <div class="toolbar-row">
+            <div class="toolbar-filters">
+              <input type="text" id="eventsSearch" class="input-soc" placeholder="Search URI, query, IP, service...">
+              <select id="eventsActionFilter" class="select-soc">
+                <option value="">All actions</option>
+                <option value="ALLOW">ALLOW</option>
+                <option value="BLOCK">BLOCK</option>
+              </select>
+              <select id="eventsThreatFilter" class="select-soc">
+                <option value="">All threats</option>
+                <option value="SQL_INJECTION">SQL_INJECTION</option>
+                <option value="XSS">XSS</option>
+                <option value="PATH_TRAVERSAL">PATH_TRAVERSAL</option>
+                <option value="IP_BLACKLISTED">IP_BLACKLISTED</option>
+                <option value="NONE">NONE</option>
+              </select>
+            </div>
+            <div class="pagination-group">
+              <span class="page-indicator" id="eventsPageInfo">Page 1</span>
+              <button class="btn-outline btn-xs" id="btnEventsPrev">Prev</button>
+              <button class="btn-outline btn-xs" id="btnEventsNext">Next</button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="soc-table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Client IP</th>
+                  <th>Method</th>
+                  <th>Service</th>
+                  <th>URI / Query</th>
+                  <th>Threat</th>
+                  <th>Action</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="eventsTableBody">
+                <tr><td colspan="8" class="empty-cell">Loading firewall events...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- TAB 3: INTERNAL TELEMETRY                                           -->
+      <!-- =================================================================== -->
+      <section id="tab-telemetry" class="tab-panel">
+        <div class="page-head">
+          <div class="page-title-line">
+            <h1>Internal Network &amp; Engine Telemetry</h1>
+            <span class="status-pill-live"><span class="dot-sm green"></span>System Live</span>
+          </div>
+          <p class="page-subtitle" id="telemetrySubtitle">Live Spring Boot Actuator, JVM, Kafka &amp; WAF request telemetry</p>
+        </div>
+
+        <div class="panel-card">
+          <div class="chart-head">
+            <span class="chart-title">INTERNAL TRAFFIC &amp; DETECTIONS</span>
+            <span class="chart-meta" id="telemetryChartBucket">per bucket</span>
+          </div>
+          <div class="canvas-wrap"><canvas id="chartTelemetrySeries"></canvas></div>
+          <div class="chart-legend">
+            <span><i class="leg-sq red"></i>Blocked / SQLi</span>
+            <span><i class="leg-sq amber"></i>XSS</span>
+            <span><i class="leg-sq purple"></i>Path Traversal</span>
+            <span><i class="leg-sq green"></i>Allowed Clean</span>
+            <span><i class="leg-sq cyan"></i>Management</span>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <div class="toolbar-row">
+            <div class="toolbar-filters">
+              <input type="text" id="telemetrySearch" class="input-soc" placeholder="Search metric or component...">
+              <select id="telemetryCategoryFilter" class="select-soc">
+                <option value="">All categories</option>
+                <option value="WAF Engine">WAF Engine</option>
+                <option value="JVM Memory">JVM Memory</option>
+                <option value="HTTP Server">HTTP Server</option>
+                <option value="Database Pool">Database Pool</option>
+                <option value="Microservice">Microservice</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="soc-table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Category</th>
+                  <th>Component</th>
+                  <th>Metric / Detail</th>
+                  <th>Value / Status</th>
+                </tr>
+              </thead>
+              <tbody id="telemetryTableBody">
+                <tr><td colspan="5" class="empty-cell">Collecting live telemetry...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- TAB 4: FIREWALL RULES                                               -->
+      <!-- =================================================================== -->
+      <section id="tab-rules" class="tab-panel">
+        <div class="page-head-row">
+          <div>
+            <div class="page-title-line">
+              <h1>Firewall Rules Management</h1>
+              <span class="status-pill-live"><span class="dot-sm green"></span>System Live</span>
+            </div>
+            <p class="page-subtitle">URL path &amp; query filtering policies stored in MySQL and synchronized with threat rules.</p>
+          </div>
+          <button class="btn-blue" id="btnOpenAddRuleModal">+ Add New Rule</button>
+        </div>
+
+        <div class="panel-card">
+          <div class="table-wrap">
+            <table class="soc-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Rule Name / Pattern</th>
+                  <th>Target Field</th>
+                  <th>Action</th>
+                  <th>Hits</th>
+                  <th>Status</th>
+                  <th class="text-right">Operations</th>
+                </tr>
+              </thead>
+              <tbody id="rulesTableBody">
+                <tr><td colspan="7" class="empty-cell">Loading firewall rules...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- TAB 5: THREAT ENGINE                                                -->
+      <!-- =================================================================== -->
+      <section id="tab-threats" class="tab-panel">
+        <div class="page-head-row">
+          <div>
+            <div class="page-title-line">
+              <h1>Threat Detection Engine</h1>
+              <span class="status-pill-live"><span class="dot-sm green"></span>System Live</span>
+            </div>
+            <p class="page-subtitle">Pattern matching &amp; ML rules loaded in the local FastAPI inspection service (Port 5000).</p>
+          </div>
+          <button class="btn-outline" id="btnReloadThreatRules">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            <span>Hot Reload rules.xlsx</span>
+          </button>
+        </div>
+
+        <div class="panel-card">
+          <div class="classifier-header">
+            <span class="classifier-title">&#9876; Threat Detection Engine (FastAPI)</span>
+            <p class="classifier-sub">Live Payload Threat Classifier &mdash; test any URI, query param, or JSON body string against the engine.</p>
+          </div>
+          <textarea id="threatPayloadInput" class="input-soc classifier-input" rows="2" placeholder="/user?query=UNION SELECT * FROM users--">/user?query=UNION SELECT * FROM users--</textarea>
+          <button class="btn-classify" id="btnTestPayload">&#9881; Classify Payload</button>
+          <div id="testClassificationResult" class="classify-result" style="display: none;"></div>
+        </div>
+
+        <div class="panel-card">
+          <div class="toolbar-row">
+            <h3 class="panel-title-sm">Active Inspection Rules (<span id="threatRuleCount">0</span> loaded)</h3>
+            <input type="text" id="threatPatternFilter" class="input-soc input-sm" placeholder="Live pattern tester / filter...">
+          </div>
+
+          <div class="table-wrap">
+            <table class="soc-table">
+              <thead>
+                <tr>
+                  <th>Threat Classification</th>
+                  <th>Target Field</th>
+                  <th>Pattern Type</th>
+                  <th>Matching Pattern / Regex</th>
+                  <th class="text-right">Tester</th>
+                </tr>
+              </thead>
+              <tbody id="threatRulesBody">
+                <tr><td colspan="5" class="empty-cell">Fetching rules from FastAPI...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- TAB 6: ATTACK SIMULATOR                                             -->
+      <!-- =================================================================== -->
+      <section id="tab-simulator" class="tab-panel">
+        <div class="page-head">
+          <div class="page-title-line">
+            <h1>Attack Simulation Studio</h1>
+            <span class="status-pill-live"><span class="dot-sm green"></span>System Live</span>
+          </div>
+          <p class="page-subtitle">Send automated synthetic cyber attacks through the firewall filter to measure mitigation accuracy and latency.</p>
+        </div>
+
+        <div class="panel-card">
+          <h3 class="panel-title-sm mb-3">&#128640; Attack Simulation &amp; Stress Testing Studio</h3>
+
+          <div class="sim-controls-row">
+            <div class="form-col flex-2">
+              <label for="simTargetUrl">Target firewall URL</label>
+              <input type="text" id="simTargetUrl" class="input-soc" value="http://localhost:7080/user" placeholder="http://localhost:7080/user">
+            </div>
+            <div class="form-col flex-1">
+              <label for="simRepeatCount">Attack multiplier (repeat count)</label>
+              <select id="simRepeatCount" class="select-soc">
+                <option value="1" selected>1 Iteration (5 Requests)</option>
+                <option value="3">3 Iterations (15 Requests)</option>
+                <option value="5">5 Iterations (25 Requests)</option>
+                <option value="10">10 Iterations (50 Requests)</option>
+                <option value="20">20 Iterations (100 Requests)</option>
+              </select>
+            </div>
+            <div class="form-col flex-1">
+              <label for="simVectorSelect">Attack vector</label>
+              <select id="simVectorSelect" class="select-soc">
+                <option value="ALL" selected>Mixed Attack Suite</option>
+                <option value="SQLI">SQL Injection Only</option>
+                <option value="XSS">XSS Attack Only</option>
+                <option value="PATH">Path Traversal Only</option>
+                <option value="CLEAN">Normal Clean Request</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="sim-actions-row">
+            <button class="btn-danger-outline" id="btnLaunchFullSimulation">&#128640; Launch Simulation Suite</button>
+            <button class="btn-outline" id="btnClearSimConsole">&#128465; Clear Console</button>
+            <div id="simInlineStats" class="sim-inline-stats" style="display: none;">
+              <span>Sent: <strong id="simTotalSent">0</strong></span>
+              <span class="text-red">Blocked: <strong id="simBlocked">0</strong></span>
+              <span class="text-green">Allowed: <strong id="simAllowed">0</strong></span>
+              <span>Block Rate: <strong id="simBlockRate">0%</strong></span>
+            </div>
+          </div>
+
+          <label class="console-label">Simulation Logs &amp; HTTP Responses</label>
+          <div class="sim-terminal" id="simTerminal">
+            <div class="term-line muted">[System Ready] Click 'Launch Simulation Suite' to begin testing.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- TAB 7: AUDIT LOGS                                                   -->
+      <!-- =================================================================== -->
+      <section id="tab-logs" class="tab-panel">
+        <div class="page-head">
+          <div class="page-title-line">
+            <h1>Audit &amp; Security Logs</h1>
+            <span class="status-pill-live"><span class="dot-sm green"></span>System Live</span>
+          </div>
+          <p class="page-subtitle">Structured security log stream from the firewall filter and Cassandra audit store.</p>
+        </div>
+
+        <div class="panel-card">
+          <div class="toolbar-row">
+            <div class="toolbar-filters">
+              <input type="text" id="auditSearch" class="input-soc" placeholder="Search messages...">
+              <select id="auditSeverityFilter" class="select-soc">
+                <option value="">All severities</option>
+                <option value="ERR">ERR (Blocked)</option>
+                <option value="WARNING">WARNING</option>
+                <option value="INFO">INFO (Allowed)</option>
+              </select>
+              <label class="chk-inline">
+                <input type="checkbox" id="auditLiveRefresh" checked>
+                <span>Live (5s refresh)</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="soc-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Host</th>
+                  <th>Program</th>
+                  <th>Severity</th>
+                  <th>Message</th>
+                </tr>
+              </thead>
+              <tbody id="auditLogsBody">
+                <tr><td colspan="5" class="empty-cell">Loading audit logs...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- TAB 8: RAW SYSLOG                                                   -->
+      <!-- =================================================================== -->
+      <section id="tab-syslog" class="tab-panel">
+        <div class="page-head-row">
+          <div>
+            <div class="page-title-line">
+              <h1>Raw Syslog Feed</h1>
+              <span class="status-pill-live"><span class="dot-sm green"></span>System Live</span>
+            </div>
+            <p class="page-subtitle">Full-fidelity syslog stream from the WAF gateway and threat detection pipeline.</p>
+          </div>
+          <button class="btn-outline" id="btnExportSyslog">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>Export .log</span>
+          </button>
+        </div>
+
+        <div class="panel-card">
+          <div class="toolbar-row">
+            <div class="toolbar-filters">
+              <input type="text" id="syslogFilterInput" class="input-soc" placeholder="Filter lines...">
+              <label class="chk-inline">
+                <input type="checkbox" id="syslogStreaming" checked>
+                <span>Streaming</span>
+              </label>
+              <label class="chk-inline">
+                <input type="checkbox" id="syslogAutoScroll" checked>
+                <span>Auto-scroll</span>
+              </label>
+            </div>
+            <span class="page-indicator" id="syslogLineCount">0 lines</span>
+          </div>
+
+          <div class="syslog-terminal" id="syslogTerminal">
+            <div class="syslog-line info">Waiting for firewall syslog stream...</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- TAB 9: SETTINGS                                                     -->
+      <!-- =================================================================== -->
+      <section id="tab-settings" class="tab-panel">
+        <div class="page-head">
+          <div class="page-title-line">
+            <h1>SecOps Portal Settings</h1>
+            <span class="status-pill-live"><span class="dot-sm green"></span>System Live</span>
+          </div>
+          <p class="page-subtitle">Microservice endpoints, telemetry polling, retention policy and default firewall posture.</p>
+        </div>
+
+        <div class="settings-cards-layout">
+        <div class="panel-card settings-card">
+          <h3 class="panel-title-sm mb-4">Integration &amp; Policy Configuration</h3>
+          <form id="settingsForm" class="settings-form">
+            <div class="settings-grid-3">
+              <div class="form-col">
+                <label for="setThreatUrl">Threat detection URL</label>
+                <input type="text" id="setThreatUrl" class="input-soc" value="http://localhost:5000">
+              </div>
+              <div class="form-col">
+                <label for="setCassandraUrl">Cassandra proxy base</label>
+                <input type="text" id="setCassandraUrl" class="input-soc" value="/cassandra-proxy">
+              </div>
+              <div class="form-col">
+                <label for="setPollSec">Polling interval</label>
+                <select id="setPollSec" class="select-soc">
+                  <option value="5">5 seconds</option>
+                  <option value="10">10 seconds</option>
+                  <option value="15" selected>15 seconds</option>
+                  <option value="30">30 seconds</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="settings-grid-2">
+              <div class="form-col">
+                <label for="setKafkaBroker">Kafka broker</label>
+                <input type="text" id="setKafkaBroker" class="input-soc" value="localhost:9092">
+              </div>
+              <div class="form-col">
+                <label for="setMySqlTarget">MySQL rules store</label>
+                <input type="text" id="setMySqlTarget" class="input-soc" value="jdbc:mysql://localhost:3306/almighty_fire" readonly>
+              </div>
+            </div>
+
+            <div class="settings-grid-2">
+              <div class="form-col">
+                <label for="setRetention">Log retention</label>
+                <select id="setRetention" class="select-soc">
+                  <option value="7d" selected>7 days</option>
+                  <option value="14d">14 days</option>
+                  <option value="30d">30 days</option>
+                  <option value="90d">90 days</option>
+                </select>
+              </div>
+              <div class="form-col">
+                <label for="setDefaultPolicy">Default firewall policy</label>
+                <select id="setDefaultPolicy" class="select-soc">
+                  <option value="ALLOW" selected>ALLOW</option>
+                  <option value="BLOCK">BLOCK</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-col">
+              <label for="setWebhook">Alerting webhook (optional)</label>
+              <input type="text" id="setWebhook" class="input-soc" placeholder="https://hooks.example.com/...">
+            </div>
+
+            <div class="mt-3">
+              <button type="submit" class="btn-blue">Save Settings</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel-card settings-card">
+          <div class="panel-head-inline">
+            <div>
+              <h3 class="panel-title-sm">Create User</h3>
+              <p class="panel-sub-sm">Provision new NetGuard accounts. Restricted to users with <strong>ADMIN</strong> authority.</p>
+            </div>
+            <span class="pill-badge pill-danger">ADMIN ONLY</span>
+          </div>
+
+          <div id="createUserAdminLock" class="quick-sim-result" style="color: var(--amber); border-color: rgba(245, 158, 11, 0.35);">
+            Admin authority required. Only signed-in users with the <strong>ADMIN</strong> role can create or manage user accounts.
+          </div>
+
+          <div id="createUserAdminContent" style="display: none;">
+            <form id="createUserForm" class="settings-form">
+              <div class="settings-grid-3">
+                <div class="form-col">
+                  <label for="newUserFullName">Full Name</label>
+                  <input type="text" id="newUserFullName" class="input-soc" placeholder="Jane Doe" required>
+                </div>
+                <div class="form-col">
+                  <label for="newUserEmail">Email</label>
+                  <input type="email" id="newUserEmail" class="input-soc" placeholder="jane@netguard.local" required>
+                </div>
+                <div class="form-col">
+                  <label for="newUserPhone">Phone / Ext</label>
+                  <input type="text" id="newUserPhone" class="input-soc" placeholder="+1-555-0142">
+                </div>
+              </div>
+
+              <div class="settings-grid-3">
+                <div class="form-col">
+                  <label for="newUserDepartment">Department</label>
+                  <select id="newUserDepartment" class="select-soc">
+                    <option value="Security Operations">Security Operations</option>
+                    <option value="SOC Analyst">SOC Analyst</option>
+                    <option value="Platform Engineering">Platform Engineering</option>
+                    <option value="Incident Response">Incident Response</option>
+                  </select>
+                </div>
+                <div class="form-col">
+                  <label for="newUserRole">Role / Authority</label>
+                  <select id="newUserRole" class="select-soc">
+                    <option value="USER" selected>USER (Read / Operator)</option>
+                    <option value="ANALYST">ANALYST (SOC)</option>
+                    <option value="ADMIN">ADMIN (Full Authority)</option>
+                  </select>
+                </div>
+                <div class="form-col">
+                  <label for="newUserStatus">Account Status</label>
+                  <select id="newUserStatus" class="select-soc">
+                    <option value="active" selected>ACTIVE</option>
+                    <option value="inactive">INACTIVE</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="settings-grid-2">
+                <div class="form-col">
+                  <label for="newUsername">Username</label>
+                  <input type="text" id="newUsername" class="input-soc" placeholder="Enter username" required autocomplete="off">
+                </div>
+                <div class="form-col">
+                  <label for="newUserPassword">Password</label>
+                  <input type="password" id="newUserPassword" class="input-soc" placeholder="Enter password" required autocomplete="new-password">
+                </div>
+              </div>
+
+              <div class="mt-3" style="display: flex; align-items: center; gap: 1rem;">
+                <button type="submit" class="btn-blue">Create User</button>
+                <span id="createUserStatus" class="page-subtitle"></span>
+              </div>
+            </form>
+          </div>
+        </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ADD / EDIT RULE MODAL -->
+  <div id="addRuleModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="ruleModalTitle">Create New Firewall Rule</h3>
+        <button class="btn-close" id="btnCloseModal">&times;</button>
+      </div>
+      <form id="addRuleForm" class="modal-body">
+        <input type="hidden" id="editRuleId">
+        <div class="form-col">
+          <label for="ruleName">Rule Name</label>
+          <input type="text" id="ruleName" class="input-soc" placeholder="Block admin console">
+        </div>
+        <div class="form-col">
+          <label for="rulePattern">URI Pattern / Regex</label>
+          <input type="text" id="rulePattern" class="input-soc" placeholder="/admin.*" required>
+        </div>
+        <div class="settings-grid-3">
+          <div class="form-col">
+            <label for="ruleField">Target Field</label>
+            <select id="ruleField" class="select-soc">
+              <option value="path">path</option>
+              <option value="query">query</option>
+              <option value="body">body</option>
+            </select>
+          </div>
+          <div class="form-col">
+            <label for="ruleAction">Action</label>
+            <select id="ruleAction" class="select-soc">
+              <option value="BLOCK">BLOCK</option>
+              <option value="ALLOW">ALLOW</option>
+            </select>
+          </div>
+          <div class="form-col">
+            <label for="ruleStatus">Status</label>
+            <select id="ruleStatus" class="select-soc">
+              <option value="active">ACTIVE</option>
+              <option value="inactive">DISABLED</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-outline" id="btnCancelModal">Cancel</button>
+          <button type="submit" class="btn-blue">Save Rule</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
