@@ -1,39 +1,90 @@
+# FireWall Engine Microservice (`almight_firewall_v1`)
 
-Firewall
---------
-A firewall is a critical network security system that monitors and controls incoming and outgoing network traffic based on predefined security rules.
+A Spring Boot network security firewall service that intercepts incoming HTTP traffic, inspects requests against rules and machine learning threat models via the standalone **`threat_detection`** microservice, and streams security logs to **Apache Kafka**.
 
-Programming languages and framework used in FireWall-Engine
------------------------------------------------------------
-Java is a widely used, high-level, object-oriented programming language and software platform known for its guiding principle: "Write Once, Run Anywhere" (WORA)
-Spring-boot is an open-source Java framework that simplifies the process of building and deploying production-ready applications.
-Python is a popular, high-level, general-purpose programming language known for its simple, readable syntax that emphasizes code clarity through the use of significant indentation.
+---
 
-Project folder structure
-------------------------
-src/main/java: This directory contains all the main Java source code for your application
+## Architecture Overview
 
-    controller: Handles incoming HTTP requests and exposes API endpoints.
-    service: Contains business logic and orchestrates operations.
-    dao: Manages data access and interacts with the database.
-    entity: Defines data models and database entities.
-    config: Stores application-wide configuration classes
-    
-src/main/resources: This folder is for configuration files and static assets.
+```
+                      Client Request
+                            │
+                            ▼
+           [almight_firewall_v1 (Spring Boot - Port 7080)]
+                            │
+             (WebClient POST /detect)
+                            ▼
+          [threat_detection (FastAPI - Port 5000)]
+                            │
+            (ALLOW or BLOCK evaluation)
+                            ▼
+         (Produces ClientRequestPojo to Kafka)
+                            │
+            [Kafka Broker: localhost:9092]
+                            │
+         (Consumed by almighty_cassandra_log)
+                            ▼
+      [almighty_cassandra_log (Spring Boot - Port 7081)]
+                            │
+                 [Apache Cassandra 9042]
+```
 
-    application.properties: The main configuration file for the application, used for settings like server port or database connections.
-    static: Contains static resources like CSS, JavaScript files, and images.
-    templates: Stores server-side HTML templates if a template engine like Thymeleaf is used
+---
 
-pom.xml (Maven) or build.gradle (Gradle): The build configuration file that manages project dependencies and plugins.
+## Project Structure
 
+```
+almight_firewall_v1/
+├── src/main/java/com/example/firewall/
+│   ├── controller/      # REST API endpoints (/rule, /users, /roles, /threat, /auth)
+│   ├── service/         # Business logic (RuleMasterService, ThreatDetectionService, AuthService)
+│   ├── repository/      # Spring Data JPA repositories (RuleMasterDao, UserMasterDao)
+│   ├── entity/          # JPA database entities (MySQL)
+│   ├── dto/             # Data Transfer Objects (ClientRequestPojo, RuleMasterPojo, etc.)
+│   ├── filter/          # FireWallFilters (Servlet filter intercepting HTTP traffic)
+│   ├── queue/           # KafkaProducerService & KafkaConsumerService
+│   ├── config/          # SecurityConfig, NettyServer
+│   └── utils/           # ConstantsInUse, CurrentTime, StringFormmer
+├── src/main/resources/
+│   ├── application.properties
+│   └── static/          # UI Dashboard assets
+├── pom.xml
+└── docker-compose.yml
+```
 
-How to Run the Project
-----------------------
-To Run the Spring-boot:mvn clean compile spring-boot:run;
-To Run the python:python3 -m uvicorn main:app --reload --port 5000(port is changable)
+---
 
-Java and python versions required
----------------------------------
+## Inter-Service Communication
 
-Use java 21 + and python 3.10 +
+### Threat Detection Service (`threat_detection`)
+- Communicates via Spring **WebClient** asynchronously.
+- Configured in `application.properties`:
+  ```properties
+  threat.detection.url=http://localhost:5000
+  threat.detection.api=/detect
+  ```
+- Gracefully handles timeouts and connection errors with fallback default `"NONE"` if `threat_detection` is temporarily unavailable.
+
+### Kafka Event Streaming
+- Streams structured `ClientRequestPojo` records to topic `firewall_logs` at `localhost:9092`.
+- Consumed by [`almighty_cassandra_log`](../almighty_cassandra_log) for high-scale Cassandra audit storage.
+
+---
+
+## How to Run
+
+### 1. Start External Infrastructure (Kafka, Zookeeper)
+```bash
+docker-compose up -d
+```
+
+### 2. Start the Threat Detection Service
+```bash
+cd ../threat_detection
+./start.sh
+```
+
+### 3. Start the Firewall Spring Boot Service
+```bash
+mvn clean compile spring-boot:run
+```
